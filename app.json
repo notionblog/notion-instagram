@@ -1,0 +1,29 @@
+{
+  "name": "Notion2Instagram",
+  "description": "Publish posts to Instagram from Notion",
+  "repository": "https://github.com/yudax42/notion-instagram",
+  "logo": "https://raw.githubusercontent.com/yudax42/notion-instagram/master/thumbnail.png",
+  "keywords": ["Notion", "Instagram"],
+  "env": {
+    "IG_USERNAME": {
+      "description": "Your Instagram username account",
+      "required": true
+    },
+    "IG_PASSWORD": {
+      "description": "Your Instagram account password",
+      "required": true
+    },
+    "NT_DB": {
+      "description": "Notion database id of the duplicated template",
+      "required": true
+    },
+    "NT_SECRET": {
+      "description": "Your Notion integration secret",
+      "required": true
+    },
+    "TIME_ZONE": {
+      "description": "Your Country TimeZone",
+      "required": true
+    }
+  }
+}

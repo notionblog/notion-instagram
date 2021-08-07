@@ -15,6 +15,10 @@
 
 # How to Use it
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/yudax42/notion-instagram)
+
+## Or
+
 ## 1. Clone this repository
 
 ## 2. Duplicate This Notion Database

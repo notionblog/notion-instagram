@@ -10,9 +10,9 @@ module.exports = () => {
             method: "POST",
             body: JSON.stringify({
               filter: {
-                property: "Publish",
+                property: "Published",
                 checkbox: {
-                  equals: true,
+                  equals: false,
                 },
               },
             }),

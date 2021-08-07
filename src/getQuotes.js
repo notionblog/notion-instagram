@@ -12,7 +12,7 @@ module.exports = () => {
               filter: {
                 property: "Publish",
                 checkbox: {
-                  equals: false,
+                  equals: true,
                 },
               },
             }),

@@ -11,13 +11,20 @@ if (!fs.existsSync(dir)) {
 (async () => {
   try {
     const quotes = await getQuotes();
-    console.log(quotes);
-    // const filename = await generateQuote("Hello World!");
-    // await publish(
-    //   filename,
-    //   "Wealth is assets that earn while you sleep.\n\n - Naval Ravikant \n\n\n#quote #quotes #quoteoftheday #motivationalquotes #inspirationalquotes #lifequotes #quotesoflife #motivation #motivational #success #motivationquotes #words #inspiration"
-    // );
+    for (i = 0; i < quotes.length; i++) {
+      const quote = quotes[i];
+      const { Quote, Tags, Schedule } = quote.properties;
+      if (Quote.title.length) {
+        const filename = await generateQuote(Quote.title[0].plain_text);
+        const description = `${Quote.title[0].plain_text}\n\n\n ${
+          Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
+        }`;
+        await publish(filename, description);
+      }
+    }
   } catch (err) {
     console.log(err);
   }
 })();
+
+const checkAndPublish = async () => {};

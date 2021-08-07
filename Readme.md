@@ -8,6 +8,11 @@
 
 ![demo](./demo.gif)
 
+# Features
+
+- Convert text content to an image and publish it to instagram
+- Post Scheduling
+
 # How to Use it
 
 ## 1. Clone this repository

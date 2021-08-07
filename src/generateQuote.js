@@ -37,7 +37,7 @@ const generateQuotePost = (text) => {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       // draw copyright
-      ctx.fillText("@_yudax", 900, 1020);
+      ctx.fillText(`@${process.env.IG_USERNAME}`, 900, 1020);
       ctx.font = "20px Rokkitt";
       ctx.textAlign = "right";
 

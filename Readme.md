@@ -44,6 +44,7 @@ IG_PASSWORD= /*  Instagram password */
 NT_DB= /*  Notion Database */
 NT_SECRET= /* Notion Integration Secret */
 TZ= /* Server Country Timezone */
+INTERVAL= /* Interval to check new posts on Notion in seconds */
 ```
 
 ## 5. Run the script

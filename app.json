@@ -24,6 +24,10 @@
     "TZ": {
       "description": "Server Country TimeZone",
       "required": true
+    },
+    "INTERVAL": {
+      "description": "Interval to check new posts on Notion in seconds",
+      "required": false
     }
   }
 }

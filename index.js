@@ -51,11 +51,11 @@ const publishPost = async (id, Quote, Tags) => {
   await updatePostStatus(id);
 };
 
-// check new posts every 20s
+// check new posts every Minute
 setInterval(async () => {
   console.log("Checking new Posts...");
   await check();
-}, 10000);
+}, process.env.INTERVAL || 60000);
 
 app.get("/", (req, res) => {
   res.send("The script is running!");

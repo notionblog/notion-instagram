@@ -10,7 +10,7 @@ const updatePostStatus = require("./src/updatePostStatus");
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
-(async () => {
+const check = async () => {
   try {
     const quotes = await getQuotes();
     for (i = 0; i < quotes.length; i++) {
@@ -37,10 +37,9 @@ if (!fs.existsSync(dir)) {
   } catch (err) {
     console.log(err);
   }
-})();
+};
 
 const publishPost = async (id, Quote, Tags) => {
-  console.log(Quote);
   const filename = await generateQuote(Quote.title[0].plain_text);
   const description = `${Quote.title[0].plain_text}\n\n\n ${
     Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
@@ -48,3 +47,9 @@ const publishPost = async (id, Quote, Tags) => {
   await publish(filename, description);
   await updatePostStatus(id);
 };
+
+// check new posts every 20s
+setInterval(async () => {
+  console.log("Checking new Posts...");
+  await check();
+}, 20000);

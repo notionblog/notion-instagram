@@ -2,6 +2,9 @@ const fs = require("fs");
 const dir = "./output";
 var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
+const express = require("express");
+const app = express();
+
 const generateQuote = require("./src/generateQuote.js");
 const publish = require("./src/publish");
 const getQuotes = require("./src/getQuotes.js");
@@ -53,3 +56,11 @@ setInterval(async () => {
   console.log("Checking new Posts...");
   await check();
 }, 10000);
+
+app.get("/", (req, res) => {
+  res.send("The script is running!");
+});
+
+app.listen(process.env.PORT || 3001, () => {
+  console.log("Server is running.");
+});

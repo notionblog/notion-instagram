@@ -52,4 +52,4 @@ const publishPost = async (id, Quote, Tags) => {
 setInterval(async () => {
   console.log("Checking new Posts...");
   await check();
-}, 20000);
+}, 10000);

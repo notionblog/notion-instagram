@@ -10,9 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.8.0",
+    "cron": "^1.8.2",
     "dotenv": "^10.0.0",
     "instagram-private-api": "^1.45.1",
-    "node-cron": "^3.0.0",
     "node-fetch": "^2.6.1",
     "uuid": "^3.4.0"
   },

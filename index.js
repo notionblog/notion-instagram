@@ -1,5 +1,6 @@
 const fs = require("fs");
 const dir = "./output";
+var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
 const generateQuote = require("./src/generateQuote.js");
 const publish = require("./src/publish");
@@ -16,12 +17,21 @@ if (!fs.existsSync(dir)) {
       const quote = quotes[i];
       const { Quote, Tags, Schedule } = quote.properties;
       if (Quote.title.length) {
-        // const filename = await generateQuote(Quote.title[0].plain_text);
-        // const description = `${Quote.title[0].plain_text}\n\n\n ${
-        //   Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
-        // }`;
-        // await publish(filename, description);
-        // await updatePostStatus(quote.id);
+        if (Schedule) {
+          const date = new Date(Schedule.date.start);
+          const job = new cron(
+            `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
+            async () => {
+              await publishPost(quote.id, Quote, Tags);
+            },
+            null,
+            true,
+            process.env.TIME_ZONE
+          );
+          job.start();
+        } else {
+          await publishPost(quote.id, Quote, Tags);
+        }
       }
     }
   } catch (err) {
@@ -29,4 +39,12 @@ if (!fs.existsSync(dir)) {
   }
 })();
 
-const checkAndPublish = async () => {};
+const publishPost = async (id, Quote, Tags) => {
+  console.log(Quote);
+  const filename = await generateQuote(Quote.title[0].plain_text);
+  const description = `${Quote.title[0].plain_text}\n\n\n ${
+    Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
+  }`;
+  await publish(filename, description);
+  await updatePostStatus(id);
+};

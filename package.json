@@ -1,0 +1,19 @@
+{
+  "name": "pquote",
+  "version": "1.0.0",
+  "description": "publish quotes to instagram",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "instagram-private-api": "^1.45.1",
+    "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "env": "^0.0.2"
+  }
+}

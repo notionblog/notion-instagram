@@ -18,34 +18,40 @@ const _formatText = (text, textWidth) => {
 };
 
 const generateQuotePost = (text) => {
-  // instagram post size
-  const canvas = createCanvas(1080, 1080);
-  const ctx = canvas.getContext("2d");
+  return new Promise(function (resolve, reject) {
+    try {
+      // instagram post size
+      const canvas = createCanvas(1080, 1080);
+      const ctx = canvas.getContext("2d");
 
-  ctx.font = "45px Rokkitt";
-  ctx.fillStyle = "white";
+      ctx.font = "45px Rokkitt";
+      ctx.fillStyle = "white";
 
-  const mainText = _formatText(text, ctx.measureText(text).width);
-  // draw text
-  ctx.fillText(
-    mainText,
-    canvas.width / 2 - ctx.measureText(mainText).width / 2,
-    canvas.height / 2 - 150
-  );
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  // draw copyright
-  ctx.fillText("@_yudax", 900, 1020);
-  ctx.font = "20px Rokkitt";
-  ctx.textAlign = "right";
+      const mainText = _formatText(text, ctx.measureText(text).width);
+      // draw text
+      ctx.fillText(
+        mainText,
+        canvas.width / 2 - ctx.measureText(mainText).width / 2,
+        canvas.height / 2 - 110
+      );
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      // draw copyright
+      ctx.fillText("@_yudax", 900, 1020);
+      ctx.font = "20px Rokkitt";
+      ctx.textAlign = "right";
 
-  // save the canvas jpg
-  const stream = canvas.createJPEGStream({ quality: 0.95 });
-  const filename = uuidv4();
-  const out = fs.createWriteStream(`${appDir}/output/${filename}.jpeg`);
-  stream.pipe(out);
-  out.on("finish", () => {
-    return filename;
+      // save the canvas jpg
+      const stream = canvas.createJPEGStream({ quality: 0.95 });
+      const filename = uuidv4();
+      const out = fs.createWriteStream(`${appDir}/output/${filename}.jpeg`);
+      stream.pipe(out);
+      out.on("finish", () => {
+        resolve(filename);
+      });
+    } catch (err) {
+      reject("failed to generate the image");
+    }
   });
 };
 

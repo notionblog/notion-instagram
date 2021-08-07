@@ -22,7 +22,7 @@
       "required": true
     },
     "TIME_ZONE": {
-      "description": "Your Country TimeZone",
+      "description": "Server Country TimeZone",
       "required": true
     }
   }

@@ -21,7 +21,7 @@
       "description": "Your Notion integration secret",
       "required": true
     },
-    "TIME_ZONE": {
+    "TZ": {
       "description": "Server Country TimeZone",
       "required": true
     }

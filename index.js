@@ -29,7 +29,7 @@ const check = async () => {
             },
             null,
             true,
-            process.env.TIME_ZONE
+            process.env.TZ
           );
           job.start();
         } else {

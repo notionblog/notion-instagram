@@ -43,7 +43,7 @@ IG_USERNAME= /*  Instagram username */
 IG_PASSWORD= /*  Instagram password */
 NT_DB= /*  Notion Database */
 NT_SECRET= /* Notion Integration Secret */
-TIME_ZONE= /* Server Country Timezone */
+TZ= /* Server Country Timezone */
 ```
 
 ## 5. Run the script

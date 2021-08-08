@@ -12,6 +12,7 @@
 
 - Convert text content to an image and publish it to instagram
 - Post Scheduling
+- Publish Images
 
 # How to Use it
 
@@ -23,7 +24,7 @@
 
 ## 2. Duplicate This Notion Database
 
-https://yudax.notion.site/bb7fd5992fc64f828b1c5cfaa4bbb5a6?v=d9b83e659c9347369961283bcae9846b
+https://yudax.notion.site/8128dba3101846cba789adb35a8375f7
 
 ## 3. Setup Notion Integration
 

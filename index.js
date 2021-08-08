@@ -34,7 +34,7 @@ const check = async () => {
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
             async () => {
               try {
-                // await publishPost(id, title, tags,image);
+                await publishPost(id, title, tags, image);
               } catch (err) {
                 console.log(err);
               }
@@ -74,7 +74,7 @@ setInterval(async () => {
 }, process.env.INTERVAL || 10000);
 
 app.get("/", async (req, res) => {
-  const posts = await getPosts();
+  // const posts = await getPosts();
   // res.json(posts);
   res.send("The script is running!");
 });

@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 const notionClient = require("notion-client");
-const api = new notionClient.NotionAPI();
+const api = new notionClient.NotionAPI({ authToken: process.env.NT_TOKEN });
 const notionUtils = require("notion-utils");
 
 const _imgLink = (src, id) => {

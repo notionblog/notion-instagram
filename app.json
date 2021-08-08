@@ -21,6 +21,10 @@
       "description": "Your Notion integration secret",
       "required": true
     },
+    "NT_TOKEN": {
+      "description": "in case you didn't share the Notion database to the web you need to add token_v2 (Click F12 to open dev console, In Application > Cookies > https://notion.so Copy the value of token_v2) ",
+      "required": false
+    },
     "TZ": {
       "description": "Server Country TimeZone",
       "required": true

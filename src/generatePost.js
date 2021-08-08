@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { createCanvas } = require("canvas");
 const uuidv4 = require("uuid/v4");
-var path = require("path");
+const path = require("path");
 const appDir = path.dirname(require.main.filename);
 
 const _formatText = (text, textWidth) => {
@@ -17,8 +17,8 @@ const _formatText = (text, textWidth) => {
   return formatedText;
 };
 
-const generateQuotePost = (text) => {
-  return new Promise(function (resolve, reject) {
+const generatePost = (text) => {
+  return new Promise((resolve, reject) => {
     try {
       // instagram post size
       const canvas = createCanvas(1080, 1080);
@@ -55,4 +55,4 @@ const generateQuotePost = (text) => {
   });
 };
 
-module.exports = generateQuotePost;
+module.exports = generatePost;

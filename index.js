@@ -1,39 +1,52 @@
 const fs = require("fs");
-const dir = "./output";
+const outputDir = "./output";
+const imagesDir = "./images";
 var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
 
-const generateQuote = require("./src/generateQuote.js");
+const generatePost = require("./src/generatePost.js");
 const publish = require("./src/publish");
-const getQuotes = require("./src/getQuotes.js");
+const getPosts = require("./src/getPosts.js");
 const updatePostStatus = require("./src/updatePostStatus");
+const getPostImage = require("./src/getPostImage");
 
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir);
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir);
 }
+
+if (!fs.existsSync(imagesDir)) {
+  fs.mkdirSync(imagesDir);
+}
+
 const check = async () => {
   try {
-    const quotes = await getQuotes();
-    for (i = 0; i < quotes.length; i++) {
-      const quote = quotes[i];
-      const { Quote, Tags, Schedule } = quote.properties;
-      if (Quote.title.length) {
-        if (Schedule) {
-          const date = new Date(Schedule.date.start);
+    const posts = await getPosts();
+    for (i = 0; i < posts.length; i++) {
+      const { id, title, tags, schedule, isScheduled, image } = posts[i];
+      if (title) {
+        if (schedule && (isScheduled === undefined || isScheduled === false)) {
+          const date = new Date(
+            `${schedule.start_date}T${schedule.start_time}`
+          );
           const job = new cron(
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
             async () => {
-              await publishPost(quote.id, Quote, Tags);
+              try {
+                // await publishPost(id, title, tags,image);
+              } catch (err) {
+                console.log(err);
+              }
             },
             null,
             true,
-            process.env.TZ
+            schedule.time_zone
           );
           job.start();
+          await updatePostStatus(id, "isScheduled");
         } else {
-          await publishPost(quote.id, Quote, Tags);
+          await publishPost(id, title, tags, image);
         }
       }
     }
@@ -42,22 +55,27 @@ const check = async () => {
   }
 };
 
-const publishPost = async (id, Quote, Tags) => {
-  const filename = await generateQuote(Quote.title[0].plain_text);
-  const description = `${Quote.title[0].plain_text}\n\n\n ${
-    Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
-  }`;
-  await publish(filename, description);
-  await updatePostStatus(id);
+const publishPost = async (id, title, tags, image) => {
+  let filename;
+  if (image) {
+    filename = await getPostImage(image);
+  } else {
+    filename = await generatePost(title);
+  }
+  const description = `${title}\n\n\n ${tags ? tags : ""}`;
+  await publish(filename, description, image ? "images" : "output");
+  await updatePostStatus(id, "isPublished");
 };
 
 // check new posts every Minute
 setInterval(async () => {
   console.log("Checking new Posts...");
   await check();
-}, process.env.INTERVAL || 60000);
+}, process.env.INTERVAL || 10000);
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const posts = await getPosts();
+  // res.json(posts);
   res.send("The script is running!");
 });
 

@@ -43,6 +43,7 @@ IG_USERNAME= /*  Instagram username */
 IG_PASSWORD= /*  Instagram password */
 NT_DB= /*  Notion Database */
 NT_SECRET= /* Notion Integration Secret */
+NT_TOKEN= /* in case you didn't share the Notion database to the web you need to add token_v2 (Click F12 to open dev console, In Application > Cookies > https://notion.so Copy the value of token_v2) */
 TZ= /* Server Country Timezone */
 INTERVAL= /* Interval to check new posts on Notion in seconds */
 ```

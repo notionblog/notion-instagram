@@ -5,9 +5,9 @@ require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
 
-const generateQuote = require("./src/generateQuote.js");
+const generatePost = require("./src/generatePost.js");
 const publish = require("./src/publish");
-const getQuotes = require("./src/getQuotes.js");
+const getPosts = require("./src/getPosts.js");
 const updatePostStatus = require("./src/updatePostStatus");
 
 if (!fs.existsSync(dir)) {
@@ -15,25 +15,27 @@ if (!fs.existsSync(dir)) {
 }
 const check = async () => {
   try {
-    const quotes = await getQuotes();
-    for (i = 0; i < quotes.length; i++) {
-      const quote = quotes[i];
-      const { Quote, Tags, Schedule } = quote.properties;
-      if (Quote.title.length) {
-        if (Schedule) {
-          const date = new Date(Schedule.date.start);
+    const posts = await getPosts();
+    console.log(posts);
+    for (i = 0; i < posts.length; i++) {
+      const { id, title, tags, schedule, image } = posts[i];
+      if (title) {
+        if (schedule) {
+          const date = new Date(
+            `${schedule.start_date}T${schedule.start_time}`
+          );
           const job = new cron(
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
             async () => {
-              await publishPost(quote.id, Quote, Tags);
+              await publishPost(id, title, tags);
             },
             null,
             true,
-            process.env.TZ
+            schedule.time_zone
           );
           job.start();
         } else {
-          await publishPost(quote.id, Quote, Tags);
+          await publishPost(id, title, tags);
         }
       }
     }
@@ -42,11 +44,9 @@ const check = async () => {
   }
 };
 
-const publishPost = async (id, Quote, Tags) => {
-  const filename = await generateQuote(Quote.title[0].plain_text);
-  const description = `${Quote.title[0].plain_text}\n\n\n ${
-    Tags.rich_text.length ? Tags.rich_text[0].plain_text : "#quote"
-  }`;
+const publishPost = async (id, title, tags) => {
+  const filename = await generatePost(title);
+  const description = `${title}\n\n\n ${tags.length ? tags : ""}`;
   await publish(filename, description);
   await updatePostStatus(id);
 };
@@ -55,10 +55,12 @@ const publishPost = async (id, Quote, Tags) => {
 setInterval(async () => {
   console.log("Checking new Posts...");
   await check();
-}, process.env.INTERVAL || 60000);
+}, process.env.INTERVAL || 10000);
 
-app.get("/", (req, res) => {
-  res.send("The script is running!");
+app.get("/", async (req, res) => {
+  const posts = await getPosts();
+  res.json(posts);
+  // res.send("The script is running!");
 });
 
 app.listen(process.env.PORT || 3001, () => {

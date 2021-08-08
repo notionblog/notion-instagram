@@ -16,6 +16,8 @@
     "express": "^4.17.1",
     "instagram-private-api": "^1.45.1",
     "node-fetch": "^2.6.1",
+    "notion-client": "^4.8.2",
+    "notion-utils": "^4.8.2",
     "uuid": "^3.4.0"
   },
   "devDependencies": {}

@@ -17,7 +17,7 @@ const _formatText = (text, textWidth) => {
   return formatedText;
 };
 
-const generateQuotePost = (text) => {
+const generatePost = (text) => {
   return new Promise(function (resolve, reject) {
     try {
       // instagram post size
@@ -55,4 +55,4 @@ const generateQuotePost = (text) => {
   });
 };
 
-module.exports = generateQuotePost;
+module.exports = generatePost;

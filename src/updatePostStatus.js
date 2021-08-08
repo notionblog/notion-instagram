@@ -8,7 +8,7 @@ module.exports = (pageId) => {
           method: "PATCH",
           body: JSON.stringify({
             properties: {
-              Published: { checkbox: true },
+              isPublished: { checkbox: true },
             },
           }),
           headers: {

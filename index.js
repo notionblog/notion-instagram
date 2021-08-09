@@ -50,7 +50,7 @@ const check = async () => {
             true,
             schedule.time_zone
           );
-        } else if (schedule) {
+        } else if (!schedule) {
           await publishPost(id, title, tags, image);
         }
       }

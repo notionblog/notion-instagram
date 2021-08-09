@@ -33,14 +33,15 @@ const check = async () => {
       if (title) {
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
           await updatePostStatus(id, "isScheduled");
+          console.log(`${title} - Scheduled`);
           const date = new Date(
             `${schedule.start_date}T${schedule.start_time}`
           );
-          const job = new cron(
+          new cron(
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
-            async () => {
+            () => {
               try {
-                await publishPost(id, title, tags, image);
+                publishPost(id, title, tags, image);
               } catch (err) {
                 console.log(err);
               }
@@ -49,8 +50,7 @@ const check = async () => {
             true,
             schedule.time_zone
           );
-          job.start();
-        } else {
+        } else if (schedule) {
           await publishPost(id, title, tags, image);
         }
       }
@@ -61,6 +61,7 @@ const check = async () => {
 };
 
 const publishPost = async (id, title, tags, image) => {
+  console.log(`publishing the post -  ${title}`);
   try {
     let filename;
     if (image) {

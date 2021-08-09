@@ -84,7 +84,7 @@ setInterval(
   },
   process.env.INTERVAL && process.env.INTERVAL > 15000
     ? process.env.INTERVAL
-    : 10000
+    : 15000
 );
 
 app.get("/", async (req, res) => {

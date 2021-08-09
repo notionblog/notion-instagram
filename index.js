@@ -5,12 +5,17 @@ var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
+const igLogin = require("./config/IgLogin");
 
 const generatePost = require("./src/generatePost.js");
 const publish = require("./src/publish");
 const getPosts = require("./src/getPosts.js");
 const updatePostStatus = require("./src/updatePostStatus");
 const getPostImage = require("./src/getPostImage");
+
+(async () => {
+  await igLogin.login();
+})();
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);
@@ -56,22 +61,31 @@ const check = async () => {
 };
 
 const publishPost = async (id, title, tags, image) => {
-  let filename;
-  if (image) {
-    filename = await getPostImage(image);
-  } else {
-    filename = await generatePost(title);
+  try {
+    let filename;
+    if (image) {
+      filename = await getPostImage(image);
+    } else {
+      filename = await generatePost(title);
+    }
+    const description = `${title}\n\n\n ${tags ? tags : ""}`;
+    await publish(filename, description, image ? "images" : "output");
+    await updatePostStatus(id, "isPublished");
+  } catch (err) {
+    console.log(err);
   }
-  const description = `${title}\n\n\n ${tags ? tags : ""}`;
-  await publish(filename, description, image ? "images" : "output");
-  await updatePostStatus(id, "isPublished");
 };
 
 // check new posts every Minute
-setInterval(async () => {
-  console.log("Checking new Posts...");
-  await check();
-}, process.env.INTERVAL || 10000);
+setInterval(
+  async () => {
+    console.log("Checking new Posts...");
+    await check();
+  },
+  process.env.INTERVAL && process.env.INTERVAL > 15000
+    ? process.env.INTERVAL
+    : 10000
+);
 
 app.get("/", async (req, res) => {
   // const posts = await getPosts();

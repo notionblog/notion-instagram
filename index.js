@@ -32,6 +32,7 @@ const check = async () => {
       const { id, title, tags, schedule, isScheduled, image } = posts[i];
       if (title) {
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
+          await updatePostStatus(id, "isScheduled");
           const date = new Date(
             `${schedule.start_date}T${schedule.start_time}`
           );
@@ -49,7 +50,6 @@ const check = async () => {
             schedule.time_zone
           );
           job.start();
-          await updatePostStatus(id, "isScheduled");
         } else {
           await publishPost(id, title, tags, image);
         }

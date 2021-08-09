@@ -25,10 +25,6 @@
       "description": "token_v2 value (check the documentation to know how find it)",
       "required": false
     },
-    "TZ": {
-      "description": "Your Country Timezone",
-      "required": true
-    },
     "INTERVAL": {
       "description": "Interval to check new posts on Notion in ms default is 15s (15000 ms)",
       "required": false

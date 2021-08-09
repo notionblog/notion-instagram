@@ -40,13 +40,12 @@ https://yudax.notion.site/8128dba3101846cba789adb35a8375f7
 ### 4. Create `.env` File (copy from `.env.template`)
 
 ```
-IG_USERNAME= /*  Instagram username */
-IG_PASSWORD= /*  Instagram password */
-NT_DB= /*  Notion Database */
-NT_SECRET= /* Notion Integration Secret */
-NT_TOKEN= /* in case you didn't share the Notion database to the web you need to add token_v2 (Click F12 to open dev console, In Application > Cookies > https://notion.so Copy the value of token_v2) */
-TZ= /* Server Country Timezone */
-INTERVAL= /* Interval to check new posts on Notion in seconds */
+IG_USERNAME= /*  Instagram account username */
+IG_PASSWORD= /* Instagram account password */
+NT_DB= /*  Notion Database ID */
+NT_SECRET= /* Notion integration secret */
+NT_TOKEN= /* token_v2 value (check the documentation to know how find it) */
+INTERVAL= /* Interval to check new posts on Notion in ms default is 15s (15000 ms) */
 ```
 
 ## 5. Run the script

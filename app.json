@@ -6,31 +6,27 @@
   "keywords": ["Notion", "Instagram"],
   "env": {
     "IG_USERNAME": {
-      "description": "Your Instagram username account",
+      "description": "Instagram account username",
       "required": true
     },
     "IG_PASSWORD": {
-      "description": "Your Instagram account password",
+      "description": "Instagram account password",
       "required": true
     },
     "NT_DB": {
-      "description": "Notion database id of the duplicated template",
+      "description": "Notion Database ID",
       "required": true
     },
     "NT_SECRET": {
-      "description": "Your Notion integration secret",
+      "description": "Notion integration secret",
       "required": true
     },
     "NT_TOKEN": {
-      "description": "in case you didn't share the Notion database to the web you need to add token_v2 (Click F12 to open dev console, In Application > Cookies > https://notion.so Copy the value of token_v2) ",
+      "description": "token_v2 value (check the documentation to know how find it)",
       "required": false
     },
-    "TZ": {
-      "description": "Server Country TimeZone",
-      "required": true
-    },
     "INTERVAL": {
-      "description": "Interval to check new posts on Notion in seconds",
+      "description": "Interval to check new posts on Notion in ms default is 15s (15000 ms)",
       "required": false
     }
   }

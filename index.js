@@ -5,12 +5,17 @@ var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const app = express();
+const igLogin = require("./config/IgLogin");
 
 const generatePost = require("./src/generatePost.js");
 const publish = require("./src/publish");
 const getPosts = require("./src/getPosts.js");
 const updatePostStatus = require("./src/updatePostStatus");
 const getPostImage = require("./src/getPostImage");
+
+(async () => {
+  await igLogin.login();
+})();
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);
@@ -27,14 +32,16 @@ const check = async () => {
       const { id, title, tags, schedule, isScheduled, image } = posts[i];
       if (title) {
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
+          await updatePostStatus(id, "isScheduled");
+          console.log(`${title} - Scheduled`);
           const date = new Date(
             `${schedule.start_date}T${schedule.start_time}`
           );
-          const job = new cron(
+          new cron(
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
-            async () => {
+            () => {
               try {
-                await publishPost(id, title, tags, image);
+                publishPost(id, title, tags, image);
               } catch (err) {
                 console.log(err);
               }
@@ -43,9 +50,7 @@ const check = async () => {
             true,
             schedule.time_zone
           );
-          job.start();
-          await updatePostStatus(id, "isScheduled");
-        } else {
+        } else if (!schedule) {
           await publishPost(id, title, tags, image);
         }
       }
@@ -56,22 +61,32 @@ const check = async () => {
 };
 
 const publishPost = async (id, title, tags, image) => {
-  let filename;
-  if (image) {
-    filename = await getPostImage(image);
-  } else {
-    filename = await generatePost(title);
+  console.log(`publishing the post -  ${title}`);
+  try {
+    let filename;
+    if (image) {
+      filename = await getPostImage(image);
+    } else {
+      filename = await generatePost(title);
+    }
+    const description = `${title}\n\n\n ${tags ? tags : ""}`;
+    await publish(filename, description, image ? "images" : "output");
+    await updatePostStatus(id, "isPublished");
+  } catch (err) {
+    console.log(err);
   }
-  const description = `${title}\n\n\n ${tags ? tags : ""}`;
-  await publish(filename, description, image ? "images" : "output");
-  await updatePostStatus(id, "isPublished");
 };
 
 // check new posts every Minute
-setInterval(async () => {
-  console.log("Checking new Posts...");
-  await check();
-}, process.env.INTERVAL || 10000);
+setInterval(
+  async () => {
+    console.log("Checking new Posts...");
+    await check();
+  },
+  process.env.INTERVAL && process.env.INTERVAL > 15000
+    ? process.env.INTERVAL
+    : 15000
+);
 
 app.get("/", async (req, res) => {
   // const posts = await getPosts();

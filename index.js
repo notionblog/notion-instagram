@@ -13,10 +13,10 @@ const getPosts = require("./src/getPosts.js");
 const updatePostStatus = require("./src/updatePostStatus");
 const getPostImage = require("./src/getPostImage");
 
-const { IG_USERNAME, IG_PASSWORD, PAGELINK, NT_SECRET } = process.env;
+const { IG_USERNAME, IG_PASSWORD, PAGE_LINK, NT_SECRET } = process.env;
 let isReady = -1;
 
-if (IG_USERNAME && IG_PASSWORD && PAGELINK && NT_SECRET) {
+if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
   isReady = 1;
 
   (async () => {
@@ -36,32 +36,27 @@ if (IG_USERNAME && IG_PASSWORD && PAGELINK && NT_SECRET) {
       const posts = await getPosts();
       for (i = 0; i < posts.length; i++) {
         const { id, title, tags, schedule, isScheduled, image } = posts[i];
-        if (title) {
-          if (
-            schedule &&
-            (isScheduled === undefined || isScheduled === false)
-          ) {
-            await updatePostStatus(id, "isScheduled");
-            console.log(`${title} - Scheduled`);
-            const date = new Date(
-              `${schedule.start_date}T${schedule.start_time}`
-            );
-            new cron(
-              `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
-              () => {
-                try {
-                  publishPost(id, title, tags, image);
-                } catch (err) {
-                  console.log(err);
-                }
-              },
-              null,
-              true,
-              schedule.time_zone
-            );
-          } else if (!schedule) {
-            await publishPost(id, title, tags, image);
-          }
+        if (schedule && (isScheduled === undefined || isScheduled === false)) {
+          await updatePostStatus(id, "isScheduled");
+          console.log(`${title} - Scheduled`);
+          const date = new Date(
+            `${schedule.start_date}T${schedule.start_time}`
+          );
+          new cron(
+            `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
+            () => {
+              try {
+                publishPost(id, title, tags, image);
+              } catch (err) {
+                console.log(err);
+              }
+            },
+            null,
+            true,
+            schedule.time_zone
+          );
+        } else if (!schedule) {
+          await publishPost(id, title, tags, image);
         }
       }
     } catch (err) {

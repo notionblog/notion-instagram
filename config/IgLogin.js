@@ -4,10 +4,14 @@ const assert = require("assert");
 let _ig;
 
 const login = async () => {
-  ig.state.generateDevice(process.env.IG_USERNAME);
-  await ig.simulate.preLoginFlow();
-  await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
-  _ig = ig;
+  try {
+    ig.state.generateDevice(process.env.IG_USERNAME);
+    await ig.simulate.preLoginFlow();
+    await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+    _ig = ig;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const getIg = () => {

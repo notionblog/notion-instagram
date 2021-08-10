@@ -23,19 +23,20 @@ const generatePost = (text) => {
       // instagram post size
       const canvas = createCanvas(1080, 1080);
       const ctx = canvas.getContext("2d");
-
       ctx.font = "45px Rokkitt";
       ctx.fillStyle = "white";
 
-      const mainText = _formatText(text, ctx.measureText(text).width);
-      // draw text
-      ctx.fillText(
-        mainText,
-        canvas.width / 2 - ctx.measureText(mainText).width / 2,
-        canvas.height / 2 - 110
-      );
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      if (text) {
+        const mainText = _formatText(text, ctx.measureText(text).width);
+        // draw text
+        ctx.fillText(
+          mainText,
+          canvas.width / 2 - ctx.measureText(mainText).width / 2,
+          canvas.height / 2 - 110
+        );
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+      }
       // draw copyright
       ctx.fillText(`@${process.env.IG_USERNAME}`, 900, 1020);
       ctx.font = "20px Rokkitt";
@@ -50,7 +51,8 @@ const generatePost = (text) => {
         resolve(filename);
       });
     } catch (err) {
-      reject("failed to generate the image");
+      console.log(err);
+      reject("failed to generate the post");
     }
   });
 };

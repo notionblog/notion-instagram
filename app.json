@@ -13,21 +13,13 @@
       "description": "Instagram account password",
       "required": true
     },
-    "NT_DB": {
-      "description": "Notion Database ID",
+    "PAGE_LINK": {
+      "description": "The link of the Notion page that you just duplicated in step 2 (check the Documentation)",
       "required": true
     },
     "NT_SECRET": {
-      "description": "Notion integration secret",
+      "description": "The Notion internal integration secret that you created in step 3 (check the Documentation)",
       "required": true
-    },
-    "NT_TOKEN": {
-      "description": "token_v2 value (check the documentation to know how find it)",
-      "required": false
-    },
-    "INTERVAL": {
-      "description": "Interval to check new posts on Notion in ms default is 15s (15000 ms)",
-      "required": false
     }
   }
 }

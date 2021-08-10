@@ -9,10 +9,14 @@ const _imgLink = (src, id) => {
   )}?table=block&id=${id}&cache=v2`;
 };
 
+const _getDbId = (pagelink) => {
+  return pagelink.split("/")[3];
+};
+
 module.exports = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const blocks = (await api.getPage(process.env.NT_DB)).block;
+      const blocks = (await api.getPage(_getDbId(process.env.PAGE_LINK))).block;
       const postsIds = Object.keys(blocks).filter((id) => {
         const block = blocks[id];
 

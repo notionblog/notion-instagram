@@ -10,7 +10,8 @@ This tool enables you to publish Instagram posts directly from Notion, with the 
 
 # Features
 
-- 🖼️ Publish posts with images
+- 🖼️ Publish posts with an image
+- 📷 Publish Album of images
 - ✍️ Publish posts with just text (it automatically create an image with the text content)
 - ⏲️ Scheduler - schedule your Instagram posts to be published automatically with the given date
 

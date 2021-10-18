@@ -37,10 +37,13 @@ module.exports = () => {
       let posts = [];
       postsIds.forEach((id) => {
         const properties = blocks[id].value.properties;
+        console.log(properties["^w`s"][0][0]);
         posts.push({
           id: id,
           title: properties["title"] ? properties["title"][0][0] : null,
-          tags: properties["^w`s"] ? properties["^w`s"][0][0] : null,
+          tags: properties["^w`s"]
+            ? properties["^w`s"][0][0].replace(/,/g, " ")
+            : null,
           schedule:
             properties["g@eh"] && properties["g@eh"][0][1]
               ? properties["g@eh"][0][1][0][1]

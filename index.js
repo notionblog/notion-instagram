@@ -39,7 +39,7 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
         const { id, title, tags, schedule, isScheduled, images } = posts[i];
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
           await updatePostStatus(id, "isScheduled");
-          console.log(`${title} - Scheduled - ${schedule}`);
+          console.log(`${title} - Scheduled - ${JSON.stringify(schedule)}`);
           const date = new Date(
             `${schedule.start_date}T${schedule.start_time}`
           );

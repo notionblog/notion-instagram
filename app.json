@@ -1,7 +1,7 @@
 {
   "name": "Notion2Instagram",
   "description": "Publish posts to Instagram from Notion",
-  "repository": "https://github.com/yudax42/notion-instagram",
+  "repository": "https://github.com/notionblog/notion-instagram",
   "logo": "https://raw.githubusercontent.com/yudax42/notion-instagram/master/thumbnail.png",
   "keywords": ["Notion", "Instagram", "instapost"],
   "env": {

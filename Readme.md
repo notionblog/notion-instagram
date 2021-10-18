@@ -21,4 +21,4 @@ This tool enables you to publish Instagram posts directly from Notion, with the 
 
 # Deploy To Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/yudax42/notion-instagram)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/notionblog/notion-instagram)

@@ -3,7 +3,7 @@
   "description": "Publish posts to Instagram from Notion",
   "repository": "https://github.com/yudax42/notion-instagram",
   "logo": "https://raw.githubusercontent.com/yudax42/notion-instagram/master/thumbnail.png",
-  "keywords": ["Notion", "Instagram"],
+  "keywords": ["Notion", "Instagram", "instapost"],
   "env": {
     "IG_USERNAME": {
       "description": "Instagram account username",

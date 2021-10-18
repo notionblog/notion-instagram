@@ -46,12 +46,16 @@ module.exports = () => {
               ? properties["g@eh"][0][1][0][1]
               : null,
           isScheduled: properties["d{}M"] && properties["d{}M"][0][0] === "Yes",
-          image: properties["YXUk"]
-            ? _imgLink(properties["YXUk"][0][1][0][1], id)
-            : null,
+          // Filter multiples images
+          images: properties["YXUk"]
+            ? properties["YXUk"]
+                .map((img) => {
+                  if (img && img[0] != ",") return _imgLink(img[1][0][1], id);
+                })
+                .filter((img) => img != null)
+            : [],
         });
       });
-
       resolve(posts);
     } catch (err) {
       console.log(err);

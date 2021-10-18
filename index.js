@@ -34,8 +34,9 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
   const check = async () => {
     try {
       const posts = await getPosts();
+
       for (i = 0; i < posts.length; i++) {
-        const { id, title, tags, schedule, isScheduled, image } = posts[i];
+        const { id, title, tags, schedule, isScheduled, images } = posts[i];
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
           await updatePostStatus(id, "isScheduled");
           console.log(`${title} - Scheduled`);
@@ -46,7 +47,7 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
             () => {
               try {
-                publishPost(id, title, tags, image);
+                publishPost(id, title, tags, images);
               } catch (err) {
                 console.log(err);
               }
@@ -56,7 +57,7 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
             schedule.time_zone
           );
         } else if (!schedule) {
-          await publishPost(id, title, tags, image);
+          await publishPost(id, title, tags, images);
         }
       }
     } catch (err) {
@@ -64,18 +65,26 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
     }
   };
 
-  const publishPost = async (id, title, tags, image) => {
+  const publishPost = async (id, title, tags, images) => {
     console.log(`publishing the post -  ${title}`);
     try {
-      let filename;
-      if (image) {
-        filename = await getPostImage(image);
-      } else {
-        filename = await generatePost(title);
-      }
-      const description = `${title}\n\n\n ${tags ? tags : ""}`;
-      await publish(filename, description, image ? "images" : "output");
       await updatePostStatus(id, "isPublished");
+      const files = [];
+      //check if there the user one to add images or  post with text
+      if (images && images.length > 0) {
+        let i = 0;
+        // generate all images
+        while (i <= images.length - 1) {
+          const filename = await getPostImage(images[i]);
+          files.push({ file: filename });
+          i++;
+        }
+      } else {
+        const filename = await generatePost(title);
+        files.push({ file: filename });
+      }
+      const caption = `${title}\n\n\n ${tags ? tags : ""}`;
+      await publish(files, caption, images.length > 0 ? "images" : "output");
     } catch (err) {
       console.log(err);
     }

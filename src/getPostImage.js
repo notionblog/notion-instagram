@@ -1,4 +1,3 @@
-const fs = require("fs");
 const fetch = require("node-fetch");
 const uuidv4 = require("uuid/v4");
 const path = require("path");
@@ -14,11 +13,11 @@ module.exports = async (imageUrl) => {
       sharp(buffer)
         .resize(1080, 1080)
         .jpeg({ mozjpeg: true })
-        .toFile(`${appDir}/images/${filename}.jpeg`, (err, info) => {
+        .toFile(`${appDir}/media/${filename}.jpeg`, (err, info) => {
           resolve(filename);
         });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject("error");
     }
   });

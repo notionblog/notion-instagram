@@ -20,7 +20,7 @@ module.exports = (pageId, property) => {
 
       resolve("Post Updated");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject(err);
     }
   });

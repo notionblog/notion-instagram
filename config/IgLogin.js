@@ -5,12 +5,12 @@ let _ig;
 
 const login = async () => {
   try {
+    // _ig = true;
     ig.state.generateDevice(process.env.IG_USERNAME);
-    // await ig.simulate.preLoginFlow();
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
     _ig = ig;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 

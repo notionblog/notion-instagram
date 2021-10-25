@@ -51,7 +51,7 @@ const generatePost = (text) => {
         resolve(filename);
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject("failed to generate the post");
     }
   });

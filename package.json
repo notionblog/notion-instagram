@@ -1,6 +1,6 @@
 {
-  "name": "pquote",
-  "version": "1.0.0",
+  "name": "instapost",
+  "version": "1.0.1",
   "description": "publish quotes to instagram",
   "main": "index.js",
   "scripts": {
@@ -17,8 +17,6 @@
     "fluent-ffmpeg": "^2.1.2",
     "instagram-private-api": "^1.45.1",
     "node-fetch": "^2.6.1",
-    "notion-client": "^4.9.10",
-    "notion-utils": "^4.8.2",
     "sharp": "^0.28.3",
     "uuid": "^3.4.0"
   },

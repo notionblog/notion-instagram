@@ -28,11 +28,18 @@ const generatePost = (text) => {
 
       if (text) {
         const mainText = _formatText(text, ctx.measureText(text).width);
+
+        const textActualHeight =
+          ctx.measureText(mainText).actualBoundingBoxAscent +
+          ctx.measureText(mainText).actualBoundingBoxDescent;
+
         // draw text
         ctx.fillText(
           mainText,
           canvas.width / 2 - ctx.measureText(mainText).width / 2,
-          canvas.height / 2 - 110
+          canvas.height / 2 -
+            textActualHeight / 2 +
+            ctx.measureText(mainText).actualBoundingBoxAscent
         );
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";

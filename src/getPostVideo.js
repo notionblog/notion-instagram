@@ -2,35 +2,39 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 const uuidv4 = require("uuid/v4");
 const rootPath = require("../rootPath");
-console.log(rootPath);
 const ffmpeg = require("fluent-ffmpeg");
 
 module.exports = async (url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const filename = uuidv4();
+      console.info(`Downloading Video ${url}`);
       const tempfile = await _downloadVideo(url);
+      console.info(`-- Started Video processing  --`);
+      /*
+        Instagram Videos must 1080x1080 size and max 60s in duration
+      */
       new ffmpeg(`${rootPath}/media/${tempfile}`)
         .aspect("9:16")
         .duration(60)
         .toFormat("mp4")
         .on("error", (err) => {
-          console.log("Failed processing:", err);
+          console.error("Failed processing:", err);
           fs.unlinkSync(`${rootPath}/media/${tempfile}`);
           reject(err);
         })
         .on("progress", (progress) => {
-          console.log(`Processing Video: ${progress.targetSize} KB`);
+          console.info(`   Processing Video: ${progress.targetSize} KB`);
         })
         .on("end", async () => {
-          console.log("Proccessing video done");
+          console.info("Proccessing video done");
           fs.unlinkSync(`${rootPath}/media/${tempfile}`);
           await _getScreenshot(filename);
           resolve(filename);
         })
         .save(`${rootPath}/media/${filename}.mp4`);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject("error");
     }
   });
@@ -43,11 +47,10 @@ const _downloadVideo = (url) => {
       const res = await fetch(url);
       const buffer = await res.buffer();
       fs.writeFile(`${rootPath}/media/${tempfile}`, buffer, () => {
-        console.log(buffer);
         resolve(tempfile);
       });
     } catch (err) {
-      console.log(">>", err);
+      console.error(err);
       reject(err);
     }
   });
@@ -66,7 +69,6 @@ const _getScreenshot = (filename) => {
         })
         .on("end", async function () {
           resolve(filename);
-          //further code
         });
     } catch (err) {
       reject(err);

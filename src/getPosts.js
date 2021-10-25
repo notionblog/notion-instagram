@@ -1,76 +1,90 @@
 const fetch = require("node-fetch");
-const notionClient = require("notion-client");
-const api = new notionClient.NotionAPI({ authToken: process.env.NT_TOKEN });
-const notionUtils = require("notion-utils");
-
-const _imgLink = (src, id) => {
-  return `https://www.notion.so/image/${encodeURIComponent(
-    src
-  )}?table=block&id=${id}&cache=v2`;
-};
 
 const _getDbId = (pagelink) => {
-  return pagelink.split("/")[3];
+  return pagelink.split("/")[3].split("?")[0];
+};
+const _filters = {
+  filter: {
+    and: [
+      {
+        property: "Publish",
+        checkbox: {
+          equals: true,
+        },
+      },
+      {
+        property: "IsPublished",
+        checkbox: {
+          equals: false,
+        },
+      },
+    ],
+  },
+};
+
+const _getTags = (tags) => {
+  let tagsList = "";
+  tags.multi_select.forEach((tag) => {
+    tagsList += `#${tag.name} `;
+  });
+  return tagsList;
+};
+
+const _getDate = (date) => {
+  const split = date.split("+");
+  return {
+    date: split[0],
+    offset: split[1] ? `+${split[1]}` : "+00:00",
+  };
+};
+
+const _getMedia = (files) => {
+  return files
+    .map((media) => {
+      const mimetype = media.name.slice(-3);
+      if (["png", "jpg", "jpeg"].includes(mimetype))
+        return { type: "image", link: media.file.url };
+      else if (["mp4", "mov", "avi", "m4v"].includes(mimetype))
+        return { type: "video", link: media.file.url };
+    })
+    .filter((media) => media != null);
 };
 
 module.exports = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const blocks = (await api.getPage(_getDbId(process.env.PAGE_LINK))).block;
-      const postsIds = Object.keys(blocks).filter((id) => {
-        const block = blocks[id];
-
-        if (
-          block.value &&
-          block.value.type === "page" &&
-          block.value.properties &&
-          !(
-            block.value.properties["@@`t"] &&
-            block.value.properties["@@`t"][0][0] === "Yes"
-          ) &&
-          block.value.properties["_Tle"] &&
-          block.value.properties["_Tle"][0][0] === "Yes"
-        ) {
-          return true;
+      const data = await fetch(
+        `https://api.notion.com/v1/databases/${_getDbId(
+          process.env.PAGE_LINK
+        )}/query`,
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            "Notion-Version": "2021-05-13",
+            Authorization: `Bearer ${process.env.NT_SECRET}`,
+          },
+          body: JSON.stringify(_filters),
         }
-      });
+      );
+      const results = (await data.json()).results;
       let posts = [];
-      postsIds.forEach((id) => {
-        const properties = blocks[id].value.properties;
+      results.forEach((page) => {
+        const { Title, Tags, Schedule, IsScheduled, Media } = page.properties;
 
         posts.push({
-          id: id,
-          title: properties["title"] ? properties["title"][0][0] : null,
-          tags: properties["^w`s"]
-            ? properties["^w`s"][0][0].replace(/,/g, " ")
-            : null,
-          schedule:
-            properties["g@eh"] && properties["g@eh"][0][1]
-              ? properties["g@eh"][0][1][0][1]
-              : null,
-          isScheduled: properties["d{}M"] && properties["d{}M"][0][0] === "Yes",
-          // Filter multiples images
-          media: properties["YXUk"] ? _getMedia(properties["YXUK"]) : [],
+          id: page.id,
+          title: Title && Title.title[0] ? Title.title[0].plain_text : null,
+          tags: Tags && Tags.multi_select ? _getTags(Tags) : null,
+          schedule: Schedule ? _getDate(Schedule.date.start) : null,
+          isScheduled: IsScheduled ? IsScheduled.checkbox : false,
+          media: Media ? _getMedia(Media.files) : [],
         });
       });
       resolve(posts);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject(err);
     }
   });
-};
-
-const _getMedia = (properties) => {
-  return properties
-    .map((media) => {
-      if (media && media[0] != ",") {
-        const mimetype = media[0].split(".")[1];
-        if (["png", "jpg", "jpeg"].includes(mimetype))
-          return { type: "image", link: _imgLink(media[1][0][1], id) };
-        if (["mp4", "mov", "avi", "m4v"].includes(mimetype))
-          return { type: "video", link: media[1][0][1] };
-      }
-    })
-    .filter((media) => media != null);
 };

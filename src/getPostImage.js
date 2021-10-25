@@ -1,4 +1,3 @@
-const fs = require("fs");
 const fetch = require("node-fetch");
 const uuidv4 = require("uuid/v4");
 const path = require("path");
@@ -18,7 +17,7 @@ module.exports = async (imageUrl) => {
           resolve(filename);
         });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject("error");
     }
   });

@@ -11,7 +11,6 @@ module.exports = async (files, caption, folder) => {
     try {
       //Check if there is one image or multiple
       if (files.length === 1) {
-        console.log(`files omg: ${JSON.stringify(files[0])}`);
         // Publishing photo
         if (files[0].type == "image") {
           await ig.publish.photo({
@@ -21,7 +20,6 @@ module.exports = async (files, caption, folder) => {
             caption: caption,
           });
         } else if (files[0].type == "video") {
-          console.log("---------------videofound-----------------");
           await ig.publish.video({
             video: await readFileAsync(
               `${appDir}/${folder}/${files[0].file}.mp4`
@@ -47,7 +45,9 @@ module.exports = async (files, caption, folder) => {
               video: await readFileAsync(
                 `${appDir}/${folder}/${files[i].file}.mp4`
               ),
-              coverImage: await readFileAsync(`${appDir}/videocover.jpg`),
+              coverImage: await readFileAsync(
+                `${appDir}/${folder}/${files[i].file}.jpg`
+              ),
             });
           }
 
@@ -58,7 +58,7 @@ module.exports = async (files, caption, folder) => {
 
       resolve("post published");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       reject(`Failed to publish image: ${err}`);
     }
   });

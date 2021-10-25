@@ -10,7 +10,7 @@ const login = async () => {
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
     _ig = ig;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 

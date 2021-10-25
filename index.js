@@ -84,7 +84,7 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
             filename = await getPostVideo(media[i].link);
             console.log(filename);
           }
-          files.push({ file: filename });
+          files.push({ file: filename, type: media[i].type });
 
           i++;
         }

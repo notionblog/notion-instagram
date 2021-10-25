@@ -50,13 +50,7 @@ module.exports = () => {
               : null,
           isScheduled: properties["d{}M"] && properties["d{}M"][0][0] === "Yes",
           // Filter multiples images
-          images: properties["YXUk"]
-            ? properties["YXUk"]
-                .map((img) => {
-                  if (img && img[0] != ",") return _imgLink(img[1][0][1], id);
-                })
-                .filter((img) => img != null)
-            : [],
+          media: properties["YXUk"] ? _getMedia(properties["YXUK"]) : [],
         });
       });
       resolve(posts);
@@ -65,4 +59,18 @@ module.exports = () => {
       reject(err);
     }
   });
+};
+
+const _getMedia = (properties) => {
+  return properties
+    .map((media) => {
+      if (media && media[0] != ",") {
+        const mimetype = media[0].split(".")[1];
+        if (["png", "jpg", "jpeg"].includes(mimetype))
+          return { type: "image", link: _imgLink(media[1][0][1], id) };
+        if (["mp4", "mov", "avi", "m4v"].includes(mimetype))
+          return { type: "video", link: media[1][0][1] };
+      }
+    })
+    .filter((media) => media != null);
 };

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const outputDir = "./output";
-const imagesDir = "./images";
+const mediaDir = "./media";
 var cron = require("cron").CronJob;
 require("dotenv").config({ path: "./.env" });
 const express = require("express");
@@ -9,9 +9,10 @@ const igLogin = require("./config/IgLogin");
 
 const generatePost = require("./src/generatePost.js");
 const publish = require("./src/publish");
-const getPosts = require("./src/getPosts.js");
+const getPosts = require("./src/getPostsNew.js");
 const updatePostStatus = require("./src/updatePostStatus");
 const getPostImage = require("./src/getPostImage");
+const getPostVideo = require("./src/getPostVideo");
 
 const { IG_USERNAME, IG_PASSWORD, PAGE_LINK, NT_SECRET } = process.env;
 let isReady = -1;
@@ -27,8 +28,8 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
     fs.mkdirSync(outputDir);
   }
 
-  if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir);
+  if (!fs.existsSync(mediaDir)) {
+    fs.mkdirSync(mediaDir);
   }
 
   const check = async () => {
@@ -36,28 +37,29 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
       const posts = await getPosts();
 
       for (i = 0; i < posts.length; i++) {
-        const { id, title, tags, schedule, isScheduled, images } = posts[i];
+        const { id, title, tags, schedule, isScheduled, media } = posts[i];
         if (schedule && (isScheduled === undefined || isScheduled === false)) {
-          await updatePostStatus(id, "isScheduled");
+          await updatePostStatus(id, "IsScheduled");
           console.log(`${title} - Scheduled - ${JSON.stringify(schedule)}`);
-          const date = new Date(
-            `${schedule.start_date}T${schedule.start_time}`
-          );
+          const date = new Date(schedule.date);
           new cron(
             `${date.getSeconds()} ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth()} ${date.getDay()}`,
             () => {
               try {
-                publishPost(id, title, tags, images);
+                publishPost(id, title, tags, media);
               } catch (err) {
                 console.log(err);
               }
             },
             null,
             true,
-            schedule.time_zone
+            schedule.time_zone,
+            null,
+            null,
+            schedule.offset
           );
         } else if (!schedule) {
-          await publishPost(id, title, tags, images);
+          await publishPost(id, title, tags, media);
         }
       }
     } catch (err) {
@@ -65,26 +67,34 @@ if (IG_USERNAME && IG_PASSWORD && PAGE_LINK && NT_SECRET) {
     }
   };
 
-  const publishPost = async (id, title, tags, images) => {
+  const publishPost = async (id, title, tags, media) => {
     console.log(`publishing the post -  ${title}`);
     try {
-      await updatePostStatus(id, "isPublished");
+      await updatePostStatus(id, "IsPublished");
       const files = [];
-      //check if there the user one to add images or  post with text
-      if (images && images.length > 0) {
+      // check if their is some media files
+      if (media && media.length > 0) {
         let i = 0;
-        // generate all images
-        while (i <= images.length - 1) {
-          const filename = await getPostImage(images[i]);
+        // generate all media
+        while (i <= media.length - 1) {
+          let filename;
+          if (media[i].type == "image") {
+            filename = await getPostImage(media[i].link);
+          } else if (media[i].type == "video") {
+            filename = await getPostVideo(media[i].link);
+            console.log(filename);
+          }
           files.push({ file: filename });
+
           i++;
         }
       } else {
+        // Generate Image from title
         const filename = await generatePost(title);
         files.push({ file: filename });
       }
       const caption = `${title}\n\n\n ${tags ? tags : ""}`;
-      await publish(files, caption, images.length > 0 ? "images" : "output");
+      await publish(files, caption, media.length > 0 ? "media" : "output");
     } catch (err) {
       console.log(err);
     }

@@ -14,7 +14,7 @@ module.exports = async (imageUrl) => {
       sharp(buffer)
         .resize(1080, 1080)
         .jpeg({ mozjpeg: true })
-        .toFile(`${appDir}/images/${filename}.jpeg`, (err, info) => {
+        .toFile(`${appDir}/media/${filename}.jpeg`, (err, info) => {
           resolve(filename);
         });
     } catch (err) {

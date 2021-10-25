@@ -21,5 +21,10 @@
       "description": "The Notion internal integration secret that you created in step 3 (check the Documentation)",
       "required": true
     }
-  }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ]
 }

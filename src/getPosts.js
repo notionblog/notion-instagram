@@ -39,9 +39,11 @@ const _getDate = (date) => {
 };
 
 const _getMedia = (files) => {
+  console.log("");
   return files
     .map((media) => {
-      const mimetype = media.name.slice(-3);
+      const split = media.name.split(".");
+      const mimetype = split[split.length - 1];
       if (["png", "jpg", "jpeg"].includes(mimetype))
         return { type: "image", link: media.file.url };
       else if (["mp4", "mov", "avi", "m4v"].includes(mimetype))

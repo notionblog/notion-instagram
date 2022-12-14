@@ -13,7 +13,7 @@
     "canvas": "^2.8.0",
     "cron": "^1.8.2",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "fluent-ffmpeg": "^2.1.2",
     "instagram-private-api": "^1.45.1",
     "node-fetch": "^2.6.1",
